@@ -2,3 +2,5 @@ ML Research Internship Assessment_v2.pdf
 dataset/
 venv/
 data/
+best_age_regressor.pth
+__pycache__

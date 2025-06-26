@@ -1,44 +1,80 @@
-# Internship Assessment Submission
+# Age Regression from Face Images
 
-## 1. My Code
+This project implements a deep learning model to predict a person's age from their face image using PyTorch and a ResNet18 backbone. The model is trained as a regression task, outputting a continuous age value.
 
-All code is in `model.ipynb` in this workspace.  
-- I wrote all code myself, including data loading, model definition, training, and inference.
-- I did not use any open source model implementations, chatbots, or pre-trained models.
+## Project Overview
+- **Task:** Predict the age of a person from a face image (regression, not classification)
+- **Model:** ResNet18 backbone with custom regression head
+- **Loss Function:** L1 Loss (Mean Absolute Error)
+- **Metrics:** MAE, accuracy within ±5 and ±10 years
+- **Data:** Images organized in folders by age (e.g., `data/train/25/image1.jpg`)
 
-## 2. Brief Write-up
+## Setup Instructions
 
-I designed a simple CNN from scratch for age classification. I simplified the model to keep it understandable and easy to train on a small dataset. I found it challenging to balance model complexity and overfitting, given the limited data. I chose not to use data augmentation or advanced regularization to keep the code original and focused on core concepts. I also made sure to write my own dataset loader and training loop.
+1. **Clone the repository and navigate to the project directory:**
+   ```bash
+   git clone https://github.com/UB2002/Re-identification_Model.git
+   ```
 
-## 3. Questions & Answers
+2. **Create and activate a virtual environment (optional but recommended):**
+   ```bash
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On Linux/Mac:
+   source venv/bin/activate
+   ```
 
-**a. What model architecture did you choose and why?**  
-- I used a custom Convolutional Neural Network (CNN) with three convolutional layers followed by a fully connected classifier.
-- I chose this because CNNs are effective for image classification and the architecture is simple enough to implement from scratch.
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-**b. What was its classification accuracy?**  
-- The best validation accuracy achieved was around 60-70% (exact value depends on random seed and data split).
+4. **Prepare your data:**
+   - Organize your dataset as follows:
+     ```
+     data/
+       train/
+         20/
+           image1.jpg
+           image2.jpg
+           ...
+         30/
+           ...
+       val/
+         20/
+           ...
+         30/
+           ...
+     ```
+   - Each folder under `train` and `val` should be named with the age label and contain images of faces of that age.
 
-**c. What worked well and what did not work well?**  
-- The model was able to learn basic age group distinctions.
-- Training and validation loss decreased as expected.
-- However, the model sometimes overfit due to the small dataset and limited diversity.
+## Model Architecture Overview
+- **Backbone:** ResNet18 (pretrained on ImageNet)
+- **Head:**
+  - Dropout(0.5)
+  - Linear(num_features, 256) + ReLU
+  - Dropout(0.3)
+  - Linear(256, 128) + ReLU
+  - Linear(128, 1)  # Output: predicted age
 
-**d. How can you improve upon the results you got?**  
-- Add data augmentation (random crops, flips, color jitter).
-- Use a deeper or more regularized model.
-- Collect more data or use transfer learning (if allowed).
-- Tune hyperparameters (learning rate, batch size, etc.).
+## Training
+- Run the training script:
+  ```bash
+  run the notebook
+  ```
+- The script will train the model, print progress, and save the best model as `best_age_regressor.pth`.
+- Training and validation loss/accuracy curves will be saved as `training_history.png`.
 
-**e. If you now want to use the dataset above to train a model to make a person older or younger, what would you change?**  
-- Switch from classification to image-to-image translation (e.g., using GANs or autoencoders).
-- The model would need to generate new images, not just predict a class.
-- Prepare paired data (input image, target age) or use unpaired methods.
+## Evaluation
+- After training, the script will evaluate the model on the validation set and plot:
+  - Loss over epochs
+  - Accuracy within ±5 years over epochs
+  - Predicted vs. true age scatter plot
 
----
-
-**Bonus: Feedback on https://app.yonderwonder.ai/**  
-- The interface is clean and easy to use.
-- I like the real-time feedback and image generation features.
-- It would be great to have more control over the degree of age change and to see side-by-side comparisons.
-- Adding explanations for how the model works could help users trust the results.
+## Predicting Age for a New Image
+- Use the `predict_age` function in `main.py` or `model.ipynb`:
+  ```python
+  predicted_age = predict_age('best_age_regressor.pth', 'path/to/your/image.jpg')
+  print(f'Predicted age: {predicted_age:.1f} years')
+  ```
