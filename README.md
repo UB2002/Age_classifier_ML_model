@@ -6,7 +6,6 @@ This project implements a deep learning model to predict a person's age from the
 - **Task:** Predict the age of a person from a face image (regression, not classification)
 - **Model:** ResNet18 backbone with custom regression head
 - **Loss Function:** L1 Loss (Mean Absolute Error)
-- **Metrics:** MAE, accuracy within ±5 and ±10 years
 - **Data:** Images organized in folders by age (e.g., `data/train/25/image1.jpg`)
 
 ## Setup Instructions
